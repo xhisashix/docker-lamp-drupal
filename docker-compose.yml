@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lamp_web
+    volumes:
+      - ./www:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./apache/apache-config.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - "80:80"
+    networks:
+      - lampnet
+
+  db:
+    image: mysql:8.0
+    container_name: lamp_db
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    networks:
+      - lampnet
+
+volumes:
+  db_data:
+
+networks:
+  lampnet:
